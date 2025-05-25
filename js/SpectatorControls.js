@@ -125,7 +125,6 @@ export default class SpectatorControls {
 		this.camera.rotation.x = Math.max(Math.min(this.camera.rotation.x - lat, Math.PI / 2), - Math.PI / 2);
 		this.camera.rotation.y -= lon;
 		this._mouseState = { x: 0, y: 0 };
-
 		// movements
 		let actualMoveSpeed = delta * this.moveSpeed;
 		const velocity = this._moveState.velocity.clone();
@@ -138,7 +137,7 @@ export default class SpectatorControls {
 		if (press & UP) velocity.y = actualMoveSpeed;
 		if (press & DOWN) velocity.y = -actualMoveSpeed;
 		this._moveCamera(velocity);
-
+		
 		this._moveState.velocity = velocity;
 		this._keyState.prevPress = press;
 	}
@@ -148,6 +147,9 @@ export default class SpectatorControls {
 		this.camera.translateZ(velocity.z);
 		this.camera.translateX(velocity.x);
 		this.camera.translateY(velocity.y);
+		if (this.camera.position.y < 0.1) {
+			this.camera.position.y = 0; // prevent going below ground
+		}
 	}
 	mapKey(key, action) {
 		this.keyMapping = Object.assign({}, this.keyMapping, { [key]: action });
