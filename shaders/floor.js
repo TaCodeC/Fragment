@@ -81,7 +81,6 @@ export function createFloor() {
       uEgoColor:  { value: new THREE.Color(0x66ccff) },
       uEgoRadius: { value: 10.0 }
     },
-    side: THREE.DoubleSide
   });
 
   const mesh = new THREE.Mesh(geo, mat);
