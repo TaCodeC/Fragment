@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import SpectatorControls from './SpectatorControls.js';
-
+var WIDTH = window.innerWidth;
+var HEIGHT = window.innerHeight;
 // Initialize scene, camera, and renderer
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -40,5 +41,15 @@ function animate() {
   cube.rotation.y += 0.10;
   control.update(clock.getDelta());
   renderer.render(scene, camera);
+
+  
 }
 animate();
+
+window.onresize = () => {
+  WIDTH = window.innerWidth;
+  HEIGHT = window.innerHeight;
+  camera.aspect = WIDTH / HEIGHT;
+  camera.updateProjectionMatrix();
+  renderer.setSize(WIDTH, HEIGHT);
+};
