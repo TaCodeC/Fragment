@@ -11,12 +11,10 @@ export function createEgo(){
         void main() {
         vUv = uv * 10.0;
 
-        // aplicas la onda
         vec3 pos = position;
         pos.z += sin((position.x + uTime) * 2.0) * 0.1
                 + cos((position.y + uTime) * 2.5) * 0.1;
 
-        // pasas la posición mundial ya desplazada
         vec4 worldPos = modelMatrix * vec4(pos, 1.0);
         vWorldPos = worldPos.xyz;
 
