@@ -132,13 +132,13 @@ function animate() {
             currentEgo.material.uniforms.uTime.value = time;
         }
     }
-    let distance = calculateDistance(currentSuperego, camera);
-    currentSuperego.material.uniforms.userDist.value = distance;
+    let distancesp = calculateDistance(currentSuperego, camera);
+    currentSuperego.material.uniforms.userDist.value = distancesp;
     currentSuperego.material.uniforms.uTime.value = time;
     orbitEgo(currentSuperego, 1);
 
-    distance = calculateDistance(currentId, camera);
-    currentId.material.uniforms.userDist.value = distance;
+    let distanceid = calculateDistance(currentId, camera);
+    currentId.material.uniforms.userDist.value = distanceid;
     currentId.material.uniforms.uTime.value = time;
     orbitEgo(currentId, 2);
      
