@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { createEgo, initCameraEgo } from '../shaders/ego.js';
+import { createId } from '../shaders/id.js';
+import { createSuperego } from '../shaders/superego.js';
+
 import SpectatorControls from './SpectatorControls.js';
 import { createFloor } from '../shaders/floor.js';
 var WIDTH = window.innerWidth;
@@ -15,7 +18,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const canvas = renderer.domElement;
 
-// Egospotlight
 const egoLight = new THREE.SpotLight(0x66ccff, 100.); 
 egoLight.position.set(0, 15, 0); 
 egoLight.target.position.set(0, 0, 0); 
@@ -26,14 +28,13 @@ egoLight.decay = 1;
 scene.add(egoLight);
 scene.add(egoLight.target);
 
-// Create floor
 const floor = createFloor();
 scene.add(floor);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.x = 0;
-camera.position.y = 3.5; 
+camera.position.y = 40.5; 
 camera.position.z = 10;
 
 // Spectator controls init
@@ -55,9 +56,11 @@ document.addEventListener('pointerlockchange', () => {
 
 const clock = new THREE.Clock();
 
-// Variable to store current ego
 let currentEgo = null;
+let currentId = null;
+let currentSuperego = null;
 
+// Initialize the ego, either with camera or fallback
 async function init() {
     try {
         // Try to initialize with camera
@@ -92,14 +95,21 @@ async function init() {
     }
 }
 
+currentId = createId();
+scene.add(currentId);
+
+currentSuperego = createSuperego();
+scene.add(currentSuperego);
+
+
 function animate() {
     requestAnimationFrame(animate);
-    // Update controls
     control.update(clock.getDelta());
     var time = clock.getElapsedTime();
-
+    
     floor.update(time);
-      const now = performance.now();
+    
+     // const now = performance.now();
     frameCount++;
 
     if (currentEgo) {
@@ -122,12 +132,26 @@ function animate() {
             currentEgo.material.uniforms.uTime.value = time;
         }
     }
+    let distance = calculateDistance(currentSuperego, camera);
+    currentSuperego.material.uniforms.userDist.value = distance;
+    currentSuperego.material.uniforms.uTime.value = time;
+    orbitEgo(currentSuperego, 1);
+
+    distance = calculateDistance(currentId, camera);
+    currentId.material.uniforms.userDist.value = distance;
+    currentId.material.uniforms.uTime.value = time;
+    orbitEgo(currentId, 2);
+     
+
+    /*
+    // FPS FOR PERFOMANCE TESTING
       if (now - lastTime >= 1000) {
     const fps = frameCount / ((now - lastTime) / 1000);
     console.log(`FPS: ${fps.toFixed(1)}`);
     frameCount = 0;
     lastTime = now;
-  }
+    */
+  
     // Render
     renderer.render(scene, camera);
 }
@@ -149,3 +173,43 @@ init().then(() => {
     // Still start animation with fallback
     animate();
 });
+
+
+function orbitEgo(ego, n) {
+    if (!ego) return;
+    
+    const radius = 30;
+    const baseAngle = performance.now() * 0.0002; // Base speed of orbit
+    // If n=2, add PI (180 degrees) to place the ego opposite to the first one
+    const angle = baseAngle + (n === 2 ? Math.PI : 0);
+    
+    ego.position.x = radius * Math.cos(angle);
+    ego.position.y = radius * Math.cos(angle * 0.5) + 13.5; 
+    if (ego.position.y < 5) {
+        ego.position.y = 5; 
+    }
+    ego.position.z = radius * Math.sin(angle);
+    ego.lookAt(0, 13.5, 0); 
+}
+function calculateDistance(ego1, camera) {
+    if (!ego1 || !camera) return 0;
+    
+    const egoPosition = new THREE.Vector3();
+    ego1.getWorldPosition(egoPosition);
+    
+    const cameraPosition = new THREE.Vector3();
+    camera.getWorldPosition(cameraPosition);
+    
+    // Calculate raw distance
+    const rawDistance = egoPosition.distanceTo(cameraPosition);
+    
+    // Define distance thresholds
+    const minDistance = 2;   // When closer than this, value is 7
+    const maxDistance = 50;  // When farther than this, value is 0.5
+    
+    // Clamp and normalize the distance (inverted: closer = higher value)
+    const clampedDistance = Math.max(minDistance, Math.min(maxDistance, rawDistance));
+    const normalizedValue = 7 - 6.5 * ((clampedDistance - minDistance) / (maxDistance - minDistance));
+    
+    return normalizedValue;
+}
