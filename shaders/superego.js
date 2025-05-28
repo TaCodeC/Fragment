@@ -28,7 +28,7 @@ export function createSuperego(){
           vec3 goldPalette(float t) {
               t = clamp(t, 0.0, 1.0);
               return mix(
-                  mix(vec3(0.8), vec3(0.8, 0.5, 0.1), t),
+                  mix(vec3(0.1*-userDist/4.0, .1*userDist/4.0 , 0.3*userDist/4.0), vec3(0.8, 0.5, 0.1), t),
                   vec3(1.0, 0.85, 0.4),
                   smoothstep(0.6, 1.0, t)
               );
