@@ -95,6 +95,8 @@ export function createId(){
           uColor: { value: new THREE.Color(0x66ccff) },
           userDist: { value: 0.05 } 
         },
+            transparent: true,
+            side: THREE.DoubleSide
       });
 
       const mesh = new THREE.Mesh(geometry, material);

@@ -80,6 +80,8 @@ export function createSuperego(){
           uColor: { value: new THREE.Color(0x66ccff) },
           userDist: { value: 0.5}
         },
+         side: THREE.DoubleSide
+        
       });
 
       const mesh = new THREE.Mesh(geometry, material);
