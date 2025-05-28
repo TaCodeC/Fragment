@@ -12,8 +12,8 @@ export function createEgo(){
         vUv = uv * 10.0;
 
         vec3 pos = position;
-        pos.z += sin((position.x + uTime) * 2.0) * 0.1
-                + cos((position.y + uTime) * 2.5) * 0.1;
+        pos.z += sin((position.x + uTime) * 2.0) * 0.2
+                + cos((position.y + uTime) * 2.5) * 02;
 
         vec4 worldPos = modelMatrix * vec4(pos, 1.0);
         vWorldPos = worldPos.xyz;
@@ -116,7 +116,8 @@ export function createEgoWithCamera(videoElement) {
       void main() {
         // Distortion
         vec2 dv = vUv;
-        dv.x += sin(vUv.y * 10.0 + uTime * 2.0) * uDistortion;
+        dv.x += 0.22;
+        dv.x += (sin(vUv.y * 10.0 + uTime * 2.0) * uDistortion);
         dv.y += cos(vUv.x * 10.0 + uTime * 1.5) * uDistortion;
         vec3 camColor = texture2D(uCameraTexture, dv).rgb;
 
