@@ -34,8 +34,8 @@ scene.add(floor);
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.x = 0;
-camera.position.y = 40.5; 
-camera.position.z = 10;
+camera.position.y = 10.5; 
+camera.position.z = 30;
 
 // Spectator controls init
 const control = new SpectatorControls(camera);
@@ -101,7 +101,6 @@ scene.add(currentId);
 currentSuperego = createSuperego();
 scene.add(currentSuperego);
 
-
 function animate() {
     requestAnimationFrame(animate);
     control.update(clock.getDelta());
@@ -136,7 +135,7 @@ function animate() {
     currentSuperego.material.uniforms.userDist.value = distancesp;
     currentSuperego.material.uniforms.uTime.value = time;
     orbitEgo(currentSuperego, 1);
-
+    
     let distanceid = calculateDistance(currentId, camera);
     currentId.material.uniforms.userDist.value = distanceid;
     currentId.material.uniforms.uTime.value = time;
@@ -213,3 +212,4 @@ function calculateDistance(ego1, camera) {
     
     return normalizedValue;
 }
+
